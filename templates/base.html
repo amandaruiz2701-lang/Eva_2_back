@@ -5,18 +5,41 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block titulo %} {% endblock %}</title>
-    <!-- Bootstrap 5 CSS limpio sin bloqueos -->
+    
+    <!-- Fuentes de Google: Lora (títulos elegantes) y Nunito (textos limpios) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #FDFBF7;
+            font-family: 'Nunito', sans-serif;
         }
+        h1, h2, h3, h4, h5, h6, .navbar-brand {
+            font-family: 'Lora', serif;
+        }
+        /* Contenedor tipo píldora flotante para la barra */
         .navbar-hadasalon {
-            background-color: #CCD5AE !important;
+            background-color: #FFFFFF;
+            border: 1px solid #EAEAEA;
+            border-radius: 50px;
+        }
+        .nav-link {
+            color: #6C757D !important;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .nav-link:hover {
+            color: #588157 !important;
         }
         .btn-hadasalon-main {
             background-color: #588157;
             color: white;
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
         }
         .btn-hadasalon-main:hover {
             background-color: #3A5A40;
@@ -33,16 +56,21 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light navbar-hadasalon shadow-sm py-3">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-dark" href="{% url 'inicio' %}">🌿 HadaSalon</a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link px-3 fw-semibold" href="{% url 'inicio' %}">Inicio</a>
-                <a class="nav-link px-3 fw-semibold" href="{% url 'citas' %}">Agenda</a>
-                <a class="nav-link px-3 fw-semibold" href="{% url 'nosotros' %}">Nosotros</a>
+    <div class="container pt-4">
+        <nav class="navbar navbar-expand-lg navbar-light navbar-hadasalon shadow-sm py-2 px-4">
+            <a class="navbar-brand fw-bold text-dark d-flex align-items-center" href="{% url 'inicio' %}">
+                <img src="{% static 'logo.png' %}" alt="Logo HadaSalon" width="40" height="40" class="me-2">
+                <span style="color: #3A5A40;">Hada</span><span style="color: #E5989B;">Salon</span>
+            </a>
+            <div class="navbar-nav ms-auto align-items-center">
+                <a class="nav-link px-3" href="{% url 'inicio' %}">Inicio</a>
+                <a class="nav-link px-3" href="{% url 'citas' %}">Agenda</a>
+                <a class="nav-link px-3" href="{% url 'nosotros' %}">Nosotros</a>
+                <!-- Botón de agendar integrado en la barra como en el mockup -->
+                <a class="btn btn-hadasalon-main ms-3 fw-semibold text-white" href="{% url 'crear' %}">Agendar cita</a>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 
     <div class="container my-5">
         <div class="row">
@@ -52,7 +80,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS limpio sin bloqueos -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
