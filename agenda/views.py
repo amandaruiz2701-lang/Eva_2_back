@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import Cita
 from .forms import CitaForm
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def inicio(request):
     return render(request, 'paginas/inicio.html')
 
