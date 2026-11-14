@@ -133,3 +133,9 @@ MAILERS = {
 }
 MEDIA_URL = '/imagenes/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'imagenes')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_REDIRECT_URL = '/inicio/'
+LOGOUT_REDIRECT_URL = '/login/'
+
+LOGIN_URL = '/login/' 

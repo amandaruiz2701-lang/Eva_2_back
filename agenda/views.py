@@ -3,7 +3,6 @@ from .models import Cita
 from .forms import CitaForm
 from django.contrib.auth.decorators import login_required
 
-
 @login_required
 def inicio(request):
     return render(request, 'paginas/inicio.html')
@@ -39,3 +38,12 @@ def eliminar(request, id):
     cita = Cita.objects.get(id=id)
     cita.delete()
     return redirect('citas')
+
+def registro(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login') 
+        form = UserCreationForm()
+    return render(request, 'registration/registro.html', {'form': form})
