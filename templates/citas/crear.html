@@ -10,9 +10,32 @@
                     <!-- OJO: enctype es obligatorio para que funcionen las fotos (imagen_antes / imagen_despues) -->
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        
-                        {{ formulario.as_p }}
-                        
+                        {%if user.is_staff %}
+                            <div class="mb-3">
+                                <label for="id_cliente" class="form-label">Cliente</label>
+                                {{ formulario.cliente }}
+                            </div>
+                        {% endif %}
+                        <div class="mb-3">
+                            <label for="id_servicio" class="form-label">Servicio</label>
+                            {{ formulario.servicio }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_fecha_cita" class="form-label">Fecha de la Cita</label>
+                            {{ formulario.fecha_cita }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_imagen_antes" class="form-label">Imagen Antes</label>
+                            {{ formulario.imagen_antes }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_imagen_despues" class="form-label">Imagen Después</label>
+                            {{ formulario.imagen_despues }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_observaciones" class="form-label">Observaciones</label>
+                            {{ formulario.observaciones }}
+                        </div>
                         <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Cita</button>
                     </form>
                     

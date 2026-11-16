@@ -7,6 +7,7 @@ class Servicio(models.Model):
     descripcion = models.TextField(verbose_name='Descripción del Servicio')
     duracion_minutos = models.IntegerField(verbose_name='Duración (min)')
     costo = models.IntegerField(verbose_name='Costo ($)')
+    estilista = models.CharField(max_length=50, verbose_name='Estilista' , null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -19,9 +20,6 @@ class Cita(models.Model):
         verbose_name='Fecha Cita (Ej: 2026-12-31)', 
         help_text='Formato requerido: AAAA-MM-DD (Año-Mes-Día)'
     )
-    estilista = models.CharField(max_length=50, verbose_name='Estilista')
-    duracion_minutos = models.IntegerField(verbose_name='Duración (min)')
-    costo = models.IntegerField(verbose_name='Costo ($)')
     estado = models.CharField(max_length=30, verbose_name='Estado')
     imagen_antes = models.ImageField(upload_to='imagenes/', verbose_name='Foto Antes / Referencia', null=True, blank=True)
     imagen_despues = models.ImageField(upload_to='imagenes/', verbose_name='Foto Después / Resultado', null=True, blank=True)

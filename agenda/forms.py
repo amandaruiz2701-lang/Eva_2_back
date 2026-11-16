@@ -37,11 +37,12 @@ class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
         # La clienta solo interactúa con esto:
-        fields = ['servicio', 'fecha_cita', 'imagen_antes', 'imagen_despues', 'observaciones']
+        fields = ['cliente', 'servicio', 'fecha_cita', 'imagen_antes', 'imagen_despues', 'observaciones']
         widgets = {
             'servicio': forms.Select(attrs={'class': 'form-select rounded-3'}),
             'fecha_cita': forms.DateInput(attrs={'class': 'form-control rounded-3', 'type': 'date'}),
             'imagen_antes': forms.ClearableFileInput(attrs={'class': 'form-control rounded-3'}),
+            'imagen_despues': forms.ClearableFileInput(attrs={'class': 'form-control rounded-3'}),
             'observaciones': forms.Textarea(attrs={'class': 'form-control rounded-3', 'rows': 3, 'placeholder': '¿Alguna preferencia, tono o detalle especial?'}),
         }
 

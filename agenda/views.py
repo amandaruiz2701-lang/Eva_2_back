@@ -30,31 +30,33 @@ def citas(request):
 def crear(request):
     formulario = CitaForm(request.POST or None, request.FILES or None)
     if request.method == 'POST' and formulario.is_valid():
-        cita = formulario.save(commit=False)
-        cita.cliente = request.user
-        
-        # FUERZA la cita a estar Pendiente si es una clienta agendando
         if not request.user.is_staff:
-            cita.estado = 'Pendiente'
-        else:
-            cita.estado = 'Confirmada' # Si el admin la crea directo, nace confirmada
-            
-        # Heredar automáticamente costo y duración del servicio
-        if cita.servicio:
-            if hasattr(cita.servicio, 'costo'):
-                cita.costo = cita.servicio.costo
-            elif hasattr(cita.servicio, 'precio'):
-                cita.costo = cita.servicio.precio
-                
-            if hasattr(cita.servicio, 'duracion_minutos'):
-                cita.duracion_minutos = cita.servicio.duracion_minutos
-            elif hasattr(cita.servicio, 'duracion'):
-                cita.duracion_minutos = cita.servicio.duracion
-        
-        cita.save()
-        return redirect('citas')
-        
+            pass
+        if request.method == 'POST' and formulario.is_valid():
+            cita = formulario.save(commit=False)
+            if request.user.is_staff:
+                pass
+            else:
+                cita.cliente = request.user
+                cita.estado = 'Pendiente'  # Fuerza el estado a "Pendiente" para clientas
+
+            if cita.servicio:
+                if hasattr(cita.servicio, 'costo'):
+                    cita.costo = cita.servicio.costo
+                elif hasattr(cita.servicio, 'precio'):
+                    cita.costo = cita.servicio.precio
+                    
+                if hasattr(cita.servicio, 'duracion_minutos'):
+                    cita.duracion_minutos = cita.servicio.duracion_minutos
+                elif hasattr(cita.servicio, 'duracion'):
+                    cita.duracion_minutos = cita.servicio.duracion
+                if hasattr(cita.servicio, 'estilista'):
+                    cita.estilista = cita.servicio.estilista
+
+            cita.save()
+            return redirect('citas')
     return render(request, 'citas/crear.html', {'formulario': formulario})
+    
 @login_required
 def confirmar_cita(request, id):
     # Solo el staff (administrador del salón) puede confirmar citas
@@ -89,4 +91,4 @@ def registro(request):
             return redirect('citas')  # Redirige a la página de citas después del registro
     else:
         form = RegistroClienteForm()
-    return render(request, 'registro.html', {'form': form})
+    return render(request, 'registration/registro.html', {'form': form})
