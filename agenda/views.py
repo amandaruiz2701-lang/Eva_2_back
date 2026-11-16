@@ -81,13 +81,12 @@ def eliminar(request, id):
 
 def registro(request):
     if request.method == 'POST':
-        form = RegistroClienteForm(request.POST)  # Usamos nuestro formulario personalizado
+        form = RegistroClienteForm(request.POST)
         if form.is_valid():
-            usuario = form.save(commit=False)
-            usuario.set_password(form.cleaned_data['password'])  # Encriptamos la contraseña
-            usuario.save()
-            return redirect('login') 
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            return redirect('citas')  # Redirige a la página de citas después del registro
     else:
-        form = RegistroClienteForm()  # Corregido el bloque else para que no falle al cargar la página por GET
-        
-    return render(request, 'registration/registro.html', {'form': form})
+        form = RegistroClienteForm()
+    return render(request, 'registro.html', {'form': form})

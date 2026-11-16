@@ -1,31 +1,88 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center mt-4">
-    <div class="col-md-9 text-center p-5 card-hada">
-        <span class="badge rounded-pill mb-3 px-3 py-2" style="background-color: #f4acb7; color: white;">
-            Estética & Cuidado Personal ✨
-        </span>
-        <h1 class="display-4 fw-bold mb-3" style="color: #52796f;">¡Bienvenida a HadaSalon! 🌸</h1>
-        <p class="lead text-muted mb-4 px-md-5">
-            Tu espacio ideal para la gestión profesional de citas, servicios de belleza y bienestar.
-        </p>
-        <hr class="w-25 mx-auto my-4" style="border-top: 2px solid #b5838d;">
+<div class="card-hada p-4 mt-3">
 
-        <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
-            {% if user.is_authenticated %}
-                {% if user.is_staff %}
-                    <a href="{% url 'citas' %}" class="btn btn-hada-primary btn-lg">🛠️ Panel de Administración</a>
-                    <a href="/admin/" class="btn btn-hada-outline btn-lg">Gestionar en Django Admin</a>
-                {% else %}
-                    <a href="{% url 'citas' %}" class="btn btn-hada-outline btn-lg">Ver Mis Citas</a>
-                    <a href="{% url 'crear' %}" class="btn btn-hada-primary btn-lg">Agendar Nueva Cita 🌸</a>
-                {% endif %}
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-hada-primary btn-lg px-4">Iniciar Sesión (Cliente / Admin)</a>
-                <a href="{% url 'registro' %}" class="btn btn-hada-outline btn-lg px-4">Registrarse como Clienta</a>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <h2 class="fw-bold mb-0" style="color: #52796f;">{{ titulo }}</h2>
+
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            {% if user.is_staff %}
+            <form method="GET" class="d-flex">
+                <input class="form-control rounded-pill me-2" type="search" name="buscar"
+                       placeholder="Buscar por servicio..." value="{{ request.GET.buscar }}">
+                <button class="btn btn-hada-outline rounded-pill px-3" type="submit">Buscar</button>
+            </form>
             {% endif %}
+            <a href="{% url 'crear' %}" class="btn btn-hada-primary rounded-pill px-4">+ Agendar Nueva Cita 🌸</a>
         </div>
     </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr class="text-secondary">
+                    <th>Id</th>
+                    <th>Clienta</th>
+                    <th>Fecha</th>
+                    <th>Servicio</th>
+                    <th>Estilista</th>
+                    <th>Costo</th>
+                    <th>Estado</th>
+                    <th>Fotos</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cita in citas %}
+                <tr>
+                    <td class="fw-semibold">#{{ cita.id }}</td>
+                    <td>{{ cita.cliente.username|default:"—" }}</td>
+                    <td>{{ cita.fecha_cita|date:"d/m/Y" }}</td>
+                    <td><span class="badge bg-light text-dark border">{{ cita.servicio.nombre }}</span></td>
+                    <td>{{ cita.estilista|default:"—" }}</td>
+                    <td>${{ cita.costo }}</td>
+                    <td>
+                        {% if cita.estado == 'Confirmada' or cita.estado == 'Realizada' %}
+                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">{{ cita.estado }}</span>
+                        {% elif cita.estado == 'Cancelada' %}
+                            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2">{{ cita.estado }}</span>
+                        {% else %}
+                            <span class="badge bg-warning bg-opacity-25 text-dark px-3 py-2">{{ cita.estado }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if cita.imagen_antes %}
+                            <img src="{{ cita.imagen_antes.url }}" class="rounded-3 shadow-sm me-1"
+                                 width="40" height="40" style="object-fit: cover;" alt="Antes">
+                        {% endif %}
+                        {% if cita.imagen_despues %}
+                            <img src="{{ cita.imagen_despues.url }}" class="rounded-3 shadow-sm"
+                                 width="40" height="40" style="object-fit: cover;" alt="Después">
+                        {% endif %}
+                        {% if not cita.imagen_antes and not cita.imagen_despues %}
+                            <span class="text-muted small">Sin foto</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center text-nowrap">
+                        {% if user.is_staff and cita.estado == 'Pendiente' %}
+                            <a href="{% url 'confirmar_cita' cita.id %}" class="btn btn-sm btn-success rounded-pill px-3 me-1">Confirmar</a>
+                        {% endif %}
+                        <a href="{% url 'editar' cita.id %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1">Editar</a>
+                        <a href="{% url 'eliminar' cita.id %}" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                           onclick="return confirm('¿Seguro que quieres borrar esta cita?');">Borrar</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        No hay citas registradas. ¡Agenda la primera! 🌸
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 </div>
 {% endblock %}
