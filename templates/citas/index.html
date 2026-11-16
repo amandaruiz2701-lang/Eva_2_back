@@ -250,10 +250,10 @@
                     <td data-label="Servicio"><span class="tag">{{ cita.servicio.nombre }}</span></td>
 
                     <td data-label="Estilista">
-                        {% if cita.estilista %}{{ cita.estilista }}{% else %}<span class="muted-dash">—</span>{% endif %}
+                        {% if cita.servicio.estilista %}{{ cita.servicio.estilista }}{% else %}<span class="muted-dash">—</span>{% endif %}
                     </td>
 
-                    <td data-label="Costo"><span class="price">${{ cita.costo }}</span></td>
+                    <td data-label="Costo"><span class="price">${{ cita.servicio.costo }}</span></td>
 
                     <td data-label="Estado">
                         {% if cita.estado == 'Confirmada' or cita.estado == 'Realizada' %}
