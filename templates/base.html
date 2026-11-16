@@ -70,46 +70,18 @@
 </head>
 <body>
 
-    <!-- Barra de Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-hada shadow-sm py-3">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'inicio' %}">🌿 HadaSalon</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'citas' %}">Agenda</a>
-                    </li>
-                
-                    {% if user.is_authenticated %}
-                        <li class="nav-item ms-lg-3">
-                            <span class="badge rounded-pill bg-light text-dark border px-3 py-2">
-                                Hola, {{ user.username }} ✨
-                            </span>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{% url 'logout' %}" method="post" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">Cerrar Sesión</button>
-                            </form>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Iniciar Sesión</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-hada-primary btn-sm" href="{% url 'registro' %}">Registro</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
+   <!-- Barra de Navegación -->
+<nav class="navbar navbar-expand-lg navbar-hada shadow-sm py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'inicio' %}">🌿 HadaSalon</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <!-- Tus enlaces de navegación aquí -->
         </div>
-    </nav>
+    </div>
+</nav>
 
     <!-- Contenido Dinámico -->
     <main class="container my-5">
