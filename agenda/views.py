@@ -7,9 +7,6 @@ from django.contrib.auth.decorators import login_required
 def inicio(request):
     return render(request, 'paginas/inicio.html')
 
-def nosotros(request):
-    return render(request, 'paginas/nosotros.html')
-
 def citas(request):
     busqueda = request.GET.get('buscar')
     if busqueda:
