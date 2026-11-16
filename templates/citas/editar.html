@@ -1,53 +1,54 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block titulo %} Editar Cita - HadaSalon {% endblock %}
-
-{% block contenido %}
+{% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header py-3 text-white fw-semibold" style="background-color: #588157;">
-                Editar Ficha de Atención
+    <div class="col-md-8 col-lg-7">
+        <div class="card card-hada p-4 p-md-5">
+            <div class="text-center mb-4">
+                <span class="badge rounded-pill px-3 py-2 mb-2" style="background-color: #f4acb7; color: white;">
+                    Nueva Reserva ✨
+                </span>
+                <h2 class="fw-bold" style="color: #52796f;">Agendar Nueva Cita</h2>
+                <p class="text-muted small">Completa los datos para programar el servicio en HadaSalon</p>
             </div>
-            <div class="card-body p-4 bg-white">
-                <h4 class="card-title fw-bold mb-4" style="color: #3A5A40;">Actualizar Información</h4>
-                
-                <form enctype="multipart/form-data" method="post">
-                    {% csrf_token %}
-                    
-                    {{ formulario.as_p }}
 
-                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                        <a class="btn btn-outline-secondary px-4 rounded-pill" href="{% url 'citas' %}" role="button">Cancelar</a>
-                        <button type="submit" class="btn btn-hadasalon-main px-5 rounded-pill fw-semibold">Guardar Cambios</button>
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if formulario.non_field_errors %}
+                    <div class="alert alert-danger rounded-3">
+                        {{ formulario.non_field_errors }}
                     </div>
-                </form>
+                {% endif %}
 
-            </div>
+                <div class="row g-3">
+                    {% for field in formulario %}
+                        <!-- Hacemos que los campos de archivo y observaciones ocupen todo el ancho, y los demás mitad y mitad -->
+                        <div class="{% if field.name == 'observaciones' or field.name == 'imagen_antes' or field.name == 'imagen_despues' %}col-12{% else %}col-md-6{% endif %}">
+                            <label class="form-label fw-semibold" style="color: #354f52;">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            
+                            {% if field.help_text %}
+                                <div class="form-text small text-muted">{{ field.help_text }}</div>
+                            {% endif %}
+                            
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                    <a href="{% url 'citas' %}" class="btn btn-hada-outline">Cancelar</a>
+                    <button type="submit" class="btn btn-hada-primary px-5">Guardar Cita 🌸</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-
-<style>
-    input, select, textarea {
-        display: block;
-        width: 100%;
-        padding: 0.55rem 0.75rem;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #212529;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        appearance: none;
-        border-radius: 0.375rem;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-    input:focus, select:focus, textarea:focus {
-        border-color: #86b7fe;
-        outline: 0;
-        box-shadow: 0 0 0 0.25rem rgba(88, 129, 87, 0.25);
-    }
-</style>
 {% endblock %}

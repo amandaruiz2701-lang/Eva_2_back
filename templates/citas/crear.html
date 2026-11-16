@@ -1,53 +1,27 @@
-{% extends "base.html" %}
-
-{% block titulo %} Agendar Cita - HadaSalon {% endblock %}
-
-{% block contenido %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-            <div class="card-header py-3 text-white fw-semibold" style="background-color: #588157;">
-                Ficha de Atención y Agendamiento
-            </div>
-            <div class="card-body p-4 bg-white">
-                <h4 class="card-title fw-bold mb-4" style="color: #3A5A40;">Datos de la Cita</h4>
-                
-                <form enctype="multipart/form-data" method="post">
-                    {% csrf_token %}
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Agendar Nueva Cita</h3>
                     
-                    {{ formulario.as_p }}
-
-                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
-                        <a class="btn btn-outline-secondary px-4 rounded-pill" href="{% url 'citas' %}" role="button">Cancelar</a>
-                        <button type="submit" class="btn btn-hadasalon-main px-5 rounded-pill fw-semibold">Guardar Ficha</button>
+                    <!-- OJO: enctype es obligatorio para que funcionen las fotos (imagen_antes / imagen_despues) -->
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        {{ formulario.as_p }}
+                        
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Cita</button>
+                    </form>
+                    
+                    <div class="mt-3 text-center">
+                        <a href="{% url 'citas' %}" class="btn btn-secondary btn-sm">Volver al listado</a>
                     </div>
-                </form>
-
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    /* Estilo limpio para los campos generados automáticamente */
-    input, select, textarea {
-        display: block;
-        width: 100%;
-        padding: 0.55rem 0.75rem;
-        font-size: 1rem;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #212529;
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid #ced4da;
-        border-radius: 0.375rem;
-        margin-bottom: 1rem;
-    }
-    input:focus, select:focus, textarea:focus {
-        border-color: #86b7fe;
-        outline: 0;
-        box-shadow: 0 0 0 0.25rem rgba(88, 129, 87, 0.25);
-    }
-</style>
 {% endblock %}
