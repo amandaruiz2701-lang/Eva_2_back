@@ -1,54 +1,62 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-7">
-        <div class="card card-hada p-4 p-md-5">
-            <div class="text-center mb-4">
-                <span class="badge rounded-pill px-3 py-2 mb-2" style="background-color: #f4acb7; color: white;">
-                    Nueva Reserva ✨
-                </span>
-                <h2 class="fw-bold" style="color: #52796f;">Agendar Nueva Cita</h2>
-                <p class="text-muted small">Completa los datos para programar el servicio en HadaSalon</p>
+<div class="container page">
+    <div class="form-shell card-hada rise rise-1">
+
+        <!-- Panel lateral decorativo -->
+        <aside class="form-aside">
+            <div>
+                <span class="eyebrow eyebrow-light">Editar reserva</span>
+                <h2>Ajusta los <em>detalles</em></h2>
+                <p>Actualiza el servicio, la fecha o las observaciones de esta cita y guarda los cambios.</p>
             </div>
 
-            <form method="POST" enctype="multipart/form-data">
+            <div class="aside-id">
+                <small>Cita</small>
+                <strong>#{{ formulario.instance.id }}</strong>
+            </div>
+        </aside>
+
+        <!-- Formulario -->
+        <div class="form-main">
+            <h1 class="form-title">Editar cita</h1>
+            <p class="form-sub">Modifica los datos que necesites y guarda para actualizar tu ficha.</p>
+
+            <!-- enctype es obligatorio para que funcionen las fotos (imagen_antes / imagen_despues) -->
+            <form method="POST" enctype="multipart/form-data" class="hada-form">
                 {% csrf_token %}
 
                 {% if formulario.non_field_errors %}
-                    <div class="alert alert-danger rounded-3">
+                    <div class="alert alert-danger">
                         {{ formulario.non_field_errors }}
                     </div>
                 {% endif %}
 
-                <div class="row g-3">
+                <div class="row g-4">
                     {% for field in formulario %}
-                        <!-- Hacemos que los campos de archivo y observaciones ocupen todo el ancho, y los demás mitad y mitad -->
-                        <div class="{% if field.name == 'observaciones' or field.name == 'imagen_antes' or field.name == 'imagen_despues' %}col-12{% else %}col-md-6{% endif %}">
-                            <label class="form-label fw-semibold" style="color: #354f52;">
-                                {{ field.label }}
-                            </label>
+                        <div class="{% if field.name == 'observaciones' %}col-12{% else %}col-md-6{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                             {{ field }}
-                            
+
                             {% if field.help_text %}
-                                <div class="form-text small text-muted">{{ field.help_text }}</div>
+                                <div class="form-text">{{ field.help_text }}</div>
                             {% endif %}
-                            
+
                             {% if field.errors %}
-                                <div class="text-danger small mt-1">
-                                    {{ field.errors }}
-                                </div>
+                                <div class="errorlist">{{ field.errors }}</div>
                             {% endif %}
                         </div>
                     {% endfor %}
                 </div>
 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4 pt-3 border-top">
+                <div class="form-actions">
                     <a href="{% url 'citas' %}" class="btn btn-hada-outline">Cancelar</a>
-                    <button type="submit" class="btn btn-hada-primary px-5">Guardar Cita 🌸</button>
+                    <button type="submit" class="btn btn-hada-primary">Guardar cambios</button>
                 </div>
             </form>
         </div>
+
     </div>
 </div>
 {% endblock %}

@@ -1,28 +1,228 @@
 {% extends 'base.html' %}
 
+{% block extra_head %}
+<style>
+    .page { padding: 3.5rem 0 1rem; }
+
+    .page-head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .page-head h1 {
+        font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+        line-height: 1.05;
+        margin: .8rem 0 .4rem;
+    }
+    .page-head .count { color: var(--muted); font-size: .95rem; margin: 0; }
+
+    .tools { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+    .search {
+        position: relative;
+        min-width: 250px;
+    }
+    .search input {
+        width: 100%;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        border-radius: 999px;
+        padding: .75rem 1.2rem .75rem 2.8rem;
+        font-size: .92rem;
+        transition: border-color .25s var(--ease), box-shadow .25s var(--ease);
+    }
+    .search input:focus {
+        outline: 0;
+        border-color: var(--sage-500);
+        box-shadow: 0 0 0 .22rem rgba(111, 146, 128, .18);
+    }
+    .search svg {
+        position: absolute;
+        left: 1.1rem; top: 50%;
+        transform: translateY(-50%);
+        width: 16px; height: 16px;
+        color: var(--muted);
+    }
+
+    /* ----- Tabla ----- */
+    .agenda-card { padding: .6rem 1.2rem 1rem; overflow: hidden; }
+    .table-hada { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0; }
+    .table-hada thead th {
+        font-size: .7rem;
+        font-weight: 500;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding: 1.1rem 1rem;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap;
+    }
+    .table-hada tbody td {
+        padding: 1.1rem 1rem;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+        font-size: .95rem;
+    }
+    .table-hada tbody tr { transition: background .25s var(--ease); }
+    .table-hada tbody tr:hover { background: var(--sage-100); }
+    .table-hada tbody tr:last-child td { border-bottom: 0; }
+
+    .cell-id { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; color: var(--rose-700); }
+    .cell-name { display: flex; align-items: center; gap: .7rem; font-weight: 500; }
+    .avatar-sm {
+        width: 34px; height: 34px;
+        border-radius: 50%;
+        display: grid; place-items: center;
+        background: var(--blush);
+        color: var(--rose-700);
+        font-weight: 600;
+        font-size: .85rem;
+        text-transform: uppercase;
+        flex-shrink: 0;
+    }
+    .tag {
+        display: inline-block;
+        padding: .3rem .85rem;
+        border-radius: 999px;
+        background: var(--sage-100);
+        color: var(--sage-700);
+        font-size: .82rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    .price { font-weight: 500; white-space: nowrap; }
+    .muted-dash { color: var(--muted); opacity: .6; }
+
+    /* Estados */
+    .status {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .3rem .85rem;
+        border-radius: 999px;
+        font-size: .78rem;
+        font-weight: 600;
+        letter-spacing: .03em;
+        white-space: nowrap;
+    }
+    .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .status.ok      { background: #E4F1E8; color: #2F6B45; }
+    .status.cancel  { background: #FBE7E4; color: #A23A33; }
+    .status.pending { background: #FBF1DC; color: #9A6B14; }
+
+    /* Fotos */
+    .thumbs { display: flex; }
+    .thumbs a, .thumbs .ph {
+        width: 42px; height: 42px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 2px solid #fff;
+        margin-left: -10px;
+        box-shadow: 0 2px 8px rgba(31, 51, 42, .18);
+        transition: transform .3s var(--ease);
+        display: block;
+    }
+    .thumbs a:first-child, .thumbs .ph:first-child { margin-left: 0; }
+    .thumbs a:hover { transform: translateY(-4px) scale(1.08); z-index: 2; }
+    .thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .no-photo { font-size: .8rem; color: var(--muted); opacity: .7; }
+
+    /* Acciones */
+    .actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .4rem; }
+    .act {
+        display: inline-block;
+        padding: .38rem .95rem;
+        border-radius: 999px;
+        font-size: .8rem;
+        font-weight: 500;
+        letter-spacing: .03em;
+        text-decoration: none;
+        border: 1px solid var(--line);
+        background: var(--paper);
+        color: var(--sage-900);
+        transition: all .25s var(--ease);
+        white-space: nowrap;
+    }
+    .act:hover { border-color: var(--sage-900); background: var(--sage-900); color: #fff; }
+    .act.confirm { background: var(--sage-700); border-color: var(--sage-700); color: #fff; }
+    .act.confirm:hover { background: var(--sage-900); border-color: var(--sage-900); }
+    .act.danger { color: #A23A33; }
+    .act.danger:hover { background: #A23A33; border-color: #A23A33; color: #fff; }
+
+    /* Estado vacío */
+    .empty { text-align: center; padding: 4rem 1rem !important; }
+    .empty .big { font-family: var(--font-display); font-size: 2rem; color: var(--sage-900); }
+    .empty p { color: var(--muted); margin: .4rem 0 1.4rem; }
+
+    /* ----- Móvil: cada fila se vuelve una tarjeta ----- */
+    @media (max-width: 991.98px) {
+        .table-hada thead { display: none; }
+        .table-hada, .table-hada tbody, .table-hada tr, .table-hada td { display: block; width: 100%; }
+        .table-hada tbody tr {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: .6rem 1rem;
+            margin-bottom: 1rem;
+            background: var(--paper);
+        }
+        .table-hada tbody tr:hover { background: var(--paper); }
+        .table-hada tbody td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px dashed var(--line);
+            padding: .75rem 0;
+            text-align: right;
+        }
+        .table-hada tbody td:last-child { border-bottom: 0; }
+        .table-hada tbody td::before {
+            content: attr(data-label);
+            font-size: .68rem;
+            font-weight: 500;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: left;
+        }
+        .table-hada tbody td.empty { display: block; text-align: center; border-bottom: 0; }
+        .table-hada tbody td.empty::before { display: none; }
+        .agenda-card { padding: .4rem; border: 0; box-shadow: none; background: transparent; }
+        .actions { justify-content: flex-end; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="card-hada p-4 mt-3">
+<div class="container page">
 
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
-        <h2 class="fw-bold mb-0" style="color: #52796f;">{{ titulo }}</h2>
+    <div class="page-head">
+        <div class="rise rise-1">
+            <span class="eyebrow">Agenda</span>
+            <h1>{{ titulo }}</h1>
+            <p class="count">
+                {{ citas|length }} cita{{ citas|length|pluralize }} registrada{{ citas|length|pluralize }}
+            </p>
+        </div>
 
-        <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="tools rise rise-2">
             {% if user.is_staff %}
-            <form method="GET" class="d-flex">
-                <input class="form-control rounded-pill me-2" type="search" name="buscar"
-                       placeholder="Buscar por servicio..." value="{{ request.GET.buscar }}">
-                <button class="btn btn-hada-outline rounded-pill px-3" type="submit">Buscar</button>
+            <form method="GET" class="search">
+                <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="9" r="6"/><path d="M14 14l4 4"/></svg>
+                <input type="search" name="buscar" placeholder="Buscar por servicio…" value="{{ request.GET.buscar }}">
             </form>
             {% endif %}
-            <a href="{% url 'crear' %}" class="btn btn-hada-primary rounded-pill px-4">+ Agendar Nueva Cita 🌸</a>
+            <a href="{% url 'crear' %}" class="btn btn-hada-primary">+ Agendar nueva cita</a>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+    <div class="card-hada agenda-card rise rise-3">
+        <table class="table-hada">
             <thead>
-                <tr class="text-secondary">
-                    <th>Id</th>
+                <tr>
+                    <th>N°</th>
                     <th>Clienta</th>
                     <th>Fecha</th>
                     <th>Servicio</th>
@@ -30,53 +230,77 @@
                     <th>Costo</th>
                     <th>Estado</th>
                     <th>Fotos</th>
-                    <th class="text-center">Acciones</th>
+                    <th style="text-align:right;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for cita in citas %}
                 <tr>
-                    <td class="fw-semibold">#{{ cita.id }}</td>
-                    <td>{{ cita.cliente.username|default:"—" }}</td>
-                    <td>{{ cita.fecha_cita|date:"d/m/Y" }}</td>
-                    <td><span class="badge bg-light text-dark border">{{ cita.servicio.nombre }}</span></td>
-                    <td>{{ cita.servicio.estilista|default:"—" }}</td>
-                    <td>${{ cita.servicio.costo }}</td>
-                    <td>
+                    <td data-label="N°"><span class="cell-id">#{{ cita.id }}</span></td>
+
+                    <td data-label="Clienta">
+                        <span class="cell-name">
+                            <span class="avatar-sm">{{ cita.cliente.username|default:"?"|slice:":1" }}</span>
+                            {{ cita.cliente.username|default:"—" }}
+                        </span>
+                    </td>
+
+                    <td data-label="Fecha">{{ cita.fecha_cita|date:"d/m/Y" }}</td>
+
+                    <td data-label="Servicio"><span class="tag">{{ cita.servicio.nombre }}</span></td>
+
+                    <td data-label="Estilista">
+                        {% if cita.estilista %}{{ cita.estilista }}{% else %}<span class="muted-dash">—</span>{% endif %}
+                    </td>
+
+                    <td data-label="Costo"><span class="price">${{ cita.costo }}</span></td>
+
+                    <td data-label="Estado">
                         {% if cita.estado == 'Confirmada' or cita.estado == 'Realizada' %}
-                            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">{{ cita.estado }}</span>
+                            <span class="status ok">{{ cita.estado }}</span>
                         {% elif cita.estado == 'Cancelada' %}
-                            <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2">{{ cita.estado }}</span>
+                            <span class="status cancel">{{ cita.estado }}</span>
                         {% else %}
-                            <span class="badge bg-warning bg-opacity-25 text-dark px-3 py-2">{{ cita.estado }}</span>
+                            <span class="status pending">{{ cita.estado }}</span>
                         {% endif %}
                     </td>
-                    <td>
-                        {% if cita.imagen_antes %}
-                            <img src="{{ cita.imagen_antes.url }}" class="rounded-3 shadow-sm me-1"
-                                 width="40" height="40" style="object-fit: cover;" alt="Antes">
-                        {% endif %}
-                        {% if cita.imagen_despues %}
-                            <img src="{{ cita.imagen_despues.url }}" class="rounded-3 shadow-sm"
-                                 width="40" height="40" style="object-fit: cover;" alt="Después">
-                        {% endif %}
-                        {% if not cita.imagen_antes and not cita.imagen_despues %}
-                            <span class="text-muted small">Sin foto</span>
+
+                    <td data-label="Fotos">
+                        {% if cita.imagen_antes or cita.imagen_despues %}
+                            <div class="thumbs">
+                                {% if cita.imagen_antes %}
+                                    <a href="{{ cita.imagen_antes.url }}" target="_blank" rel="noopener" title="Antes">
+                                        <img src="{{ cita.imagen_antes.url }}" alt="Antes">
+                                    </a>
+                                {% endif %}
+                                {% if cita.imagen_despues %}
+                                    <a href="{{ cita.imagen_despues.url }}" target="_blank" rel="noopener" title="Después">
+                                        <img src="{{ cita.imagen_despues.url }}" alt="Después">
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <span class="no-photo">Sin foto</span>
                         {% endif %}
                     </td>
-                    <td class="text-center text-nowrap">
-                        {% if user.is_staff and cita.estado == 'Pendiente' %}
-                            <a href="{% url 'confirmar_cita' cita.id %}" class="btn btn-sm btn-success rounded-pill px-3 me-1">Confirmar</a>
-                        {% endif %}
-                        <a href="{% url 'editar' cita.id %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-1">Editar</a>
-                        <a href="{% url 'eliminar' cita.id %}" class="btn btn-sm btn-outline-danger rounded-pill px-3"
-                           onclick="return confirm('¿Seguro que quieres borrar esta cita?');">Borrar</a>
+
+                    <td data-label="Acciones">
+                        <div class="actions">
+                            {% if user.is_staff and cita.estado == 'Pendiente' %}
+                                <a href="{% url 'confirmar_cita' cita.id %}" class="act confirm">Confirmar</a>
+                            {% endif %}
+                            <a href="{% url 'editar' cita.id %}" class="act">Editar</a>
+                            <a href="{% url 'eliminar' cita.id %}" class="act danger"
+                               onclick="return confirm('¿Seguro que quieres borrar esta cita?');">Borrar</a>
+                        </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="9" class="text-center py-5 text-muted">
-                        No hay citas registradas. ¡Agenda la primera! 🌸
+                    <td colspan="9" class="empty">
+                        <div class="big">Aún no hay citas por aquí</div>
+                        <p>Agenda la primera y aparecerá en este listado.</p>
+                        <a href="{% url 'crear' %}" class="btn btn-hada-primary">Agendar mi primera cita</a>
                     </td>
                 </tr>
                 {% endfor %}
