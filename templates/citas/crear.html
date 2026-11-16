@@ -1,50 +1,63 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-body">
-                    <h3 class="card-title text-center mb-4">Agendar Nueva Cita</h3>
-                    
-                    <!-- OJO: enctype es obligatorio para que funcionen las fotos (imagen_antes / imagen_despues) -->
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {%if user.is_staff %}
-                            <div class="mb-3">
-                                <label for="id_cliente" class="form-label">Cliente</label>
-                                {{ formulario.cliente }}
-                            </div>
-                        {% endif %}
-                        <div class="mb-3">
-                            <label for="id_servicio" class="form-label">Servicio</label>
-                            {{ formulario.servicio }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_fecha_cita" class="form-label">Fecha de la Cita</label>
-                            {{ formulario.fecha_cita }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_imagen_antes" class="form-label">Imagen Antes</label>
-                            {{ formulario.imagen_antes }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_imagen_despues" class="form-label">Imagen Después</label>
-                            {{ formulario.imagen_despues }}
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_observaciones" class="form-label">Observaciones</label>
-                            {{ formulario.observaciones }}
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Guardar Cita</button>
-                    </form>
-                    
-                    <div class="mt-3 text-center">
-                        <a href="{% url 'citas' %}" class="btn btn-secondary btn-sm">Volver al listado</a>
-                    </div>
-                </div>
+<div class="container page">
+    <div class="form-shell card-hada rise rise-1">
+
+        <!-- Panel lateral decorativo -->
+        <aside class="form-aside">
+            <div>
+                <span class="eyebrow eyebrow-light">Nueva reserva</span>
+                <h2>Agenda tu <em>momento</em></h2>
+                <p>Elige el servicio, la fecha y cuéntanos qué tienes en mente. Nosotras nos encargamos del resto.</p>
             </div>
+
+            <ul class="aside-list">
+                <li><span>01</span> Selecciona el servicio</li>
+                <li><span>02</span> Elige tu fecha</li>
+                <li><span>03</span> Sube fotos de referencia <small>(opcional)</small></li>
+            </ul>
+        </aside>
+
+        <!-- Formulario -->
+        <div class="form-main">
+            <h1 class="form-title">Datos de la cita</h1>
+            <p class="form-sub">Completa la información para programar tu servicio en HadaSalon.</p>
+
+            <!-- enctype es obligatorio para que funcionen las fotos (imagen_antes / imagen_despues) -->
+            <form method="POST" enctype="multipart/form-data" class="hada-form">
+                {% csrf_token %}
+
+                {% if formulario.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ formulario.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="row g-4">
+                    {% for field in formulario %}
+                        <div class="{% if field.name == 'observaciones' %}col-12{% else %}col-md-6{% endif %}">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+
+                            {% if field.help_text %}
+                                <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+
+                            {% if field.errors %}
+                                <div class="errorlist">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-actions">
+                    <a href="{% url 'citas' %}" class="btn btn-hada-outline">Cancelar</a>
+                    <button type="submit" class="btn btn-hada-primary">Guardar cita</button>
+                </div>
+            </form>
         </div>
+
     </div>
 </div>
 {% endblock %}

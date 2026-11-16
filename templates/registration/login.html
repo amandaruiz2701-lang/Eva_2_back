@@ -1,49 +1,43 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center min-vh-75 py-5">
-    <div class="col-md-6 col-lg-5">
-        <div class="card card-hada p-4 p-md-5 shadow-sm border-0">
-            
-            <div class="text-center mb-4">
-                <span class="badge rounded-pill px-3 py-2 mb-2" style="background-color: #f4acb7; color: white;">
-                    Acceso al Sistema ✨
-                </span>
-                <h2 class="fw-bold" style="color: #52796f;">Ingreso HadaSalon</h2>
-                <p class="text-muted small">Por favor, ingresa tus credenciales para iniciar sesión.</p>
+<div class="container auth-page">
+    <div class="auth-card card-hada rise rise-1">
+
+        <div class="text-center mb-4">
+            <span class="eyebrow eyebrow-center">Bienvenida de vuelta</span>
+            <h1 class="auth-title">Ingreso al <em>sistema</em></h1>
+            <p class="auth-sub">Ingresa tus credenciales para iniciar sesión.</p>
+        </div>
+
+        <form method="POST" class="hada-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+
+            <!-- Mostrar error de autenticación -->
+            {% if form.errors %}
+            <div class="alert alert-danger small">
+                <strong>Usuario o contraseña incorrectos.</strong> Por favor, corrige los errores e inténtalo de nuevo.
+            </div>
+            {% endif %}
+
+            <!-- USUARIO -->
+            <div class="mb-3">
+                <label for="id_username">Usuario</label>
+                <input type="text" name="username" class="form-control" id="id_username" autocomplete="username" required>
             </div>
 
-            <form method="POST">
-                {% csrf_token %}
-                
-                <!-- USUARIO -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold" style="color: #354f52;">Usuario</label>
-                    <input type="text" name="username" class="form-control rounded-pill px-3 py-2" id="id_username" placeholder="Tu nombre de usuario" required>
-                </div>
-
-                <!-- CONTRASEÑA -->
-                <div class="mb-3">
-                    <label class="form-label fw-semibold" style="color: #354f52;">Contraseña</label>
-                    <input type="password" name="password" class="form-control rounded-pill px-3 py-2" id="id_password" placeholder="••••••••" required>
-                </div>
-
-                <!-- Mostrar error de autenticación -->
-                {% if form.errors %}
-                <div class="alert alert-danger rounded-3 small py-2 text-center">
-                    <strong>Usuario o contraseña incorrectos.</strong> Por favor, inténtalo de nuevo.
-                </div>
-                {% endif %}
-
-                <div class="d-grid mt-4">
-                    <button type="submit" class="btn btn-hada-primary py-2 rounded-pill shadow-sm">Iniciar Sesión 💖</button>
-                </div>
-            </form>
-
-            <div class="text-center mt-4 pt-3 border-top">
-                <p class="small text-muted mb-0">¿Aún no tienes cuenta? <a href="{% url 'registro' %}" class="fw-bold" style="color: #52796f; text-decoration: none;">Regístrate como clienta</a></p>
+            <!-- CONTRASEÑA -->
+            <div class="mb-4">
+                <label for="id_password">Contraseña</label>
+                <input type="password" name="password" class="form-control" id="id_password" autocomplete="current-password" required>
             </div>
 
+            <button type="submit" class="btn btn-hada-primary w-100 py-3">Iniciar sesión</button>
+        </form>
+
+        <div class="auth-foot">
+            ¿Aún no tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a>
         </div>
     </div>
 </div>
