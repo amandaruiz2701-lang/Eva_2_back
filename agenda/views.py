@@ -29,33 +29,36 @@ def citas(request):
 @login_required
 def crear(request):
     formulario = CitaForm(request.POST or None, request.FILES or None)
+
+    # Si no es admin, quitamos el campo 'cliente' del formulario para que no tenga que elegirlo
+    if not request.user.is_staff and 'cliente' in formulario.fields:
+        del formulario.fields['cliente']
+
     if request.method == 'POST' and formulario.is_valid():
+        cita = formulario.save(commit=False)
+
         if not request.user.is_staff:
-            pass
-        if request.method == 'POST' and formulario.is_valid():
-            cita = formulario.save(commit=False)
-            if request.user.is_staff:
-                pass
-            else:
-                cita.cliente = request.user
-                cita.estado = 'Pendiente'  # Fuerza el estado a "Pendiente" para clientas
+            cita.cliente = request.user
+            cita.estado = 'Pendiente'
+        else:
+            if not cita.estado:
+                cita.estado = 'Confirmada'
 
-            if cita.servicio:
-                if hasattr(cita.servicio, 'costo'):
-                    cita.costo = cita.servicio.costo
-                elif hasattr(cita.servicio, 'precio'):
-                    cita.costo = cita.servicio.precio
-                    
-                if hasattr(cita.servicio, 'duracion_minutos'):
-                    cita.duracion_minutos = cita.servicio.duracion_minutos
-                elif hasattr(cita.servicio, 'duracion'):
-                    cita.duracion_minutos = cita.servicio.duracion
-                if hasattr(cita.servicio, 'estilista'):
-                    cita.estilista = cita.servicio.estilista
+        cita.save()
+        return redirect('citas')
 
-            cita.save()
-            return redirect('citas')
     return render(request, 'citas/crear.html', {'formulario': formulario})
+    
+@login_required
+def confirmar_cita(request, id):
+    # Solo el staff (administrador del salón) puede confirmar citas
+    if request.user.is_staff:
+        cita = Cita.objects.get(id=id)
+        cita.estado = 'Confirmada'
+        cita.save()
+    return redirect('citas')
+
+
     
 @login_required
 def confirmar_cita(request, id):

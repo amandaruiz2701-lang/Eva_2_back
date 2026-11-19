@@ -36,9 +36,9 @@ class RegistroClienteForm(forms.ModelForm):
 class CitaForm(forms.ModelForm):
     class Meta:
         model = Cita
-        # La clienta solo interactúa con esto:
-        fields = ['cliente', 'servicio', 'fecha_cita', 'imagen_antes', 'imagen_despues', 'observaciones']
+        fields = [ 'cliente', 'servicio', 'fecha_cita', 'imagen_antes', 'imagen_despues', 'observaciones']
         widgets = {
+            'cliente': forms.Select(attrs={'class': 'form-select rounded-3'}),
             'servicio': forms.Select(attrs={'class': 'form-select rounded-3'}),
             'fecha_cita': forms.DateInput(attrs={'class': 'form-control rounded-3', 'type': 'date'}),
             'imagen_antes': forms.ClearableFileInput(attrs={'class': 'form-control rounded-3'}),
